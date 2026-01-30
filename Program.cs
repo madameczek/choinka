@@ -1,10 +1,11 @@
 ﻿using choinka.Gpio;
-using choinka.Triggers.SolarTime;
 using choinka.Triggers.SolarTime.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Runtime.InteropServices;
+using static choinka.Infrastructure.Logging.Configuration.ConfigureAppLogging;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -25,10 +26,9 @@ try
 
     var hostBuilder = Host.CreateDefaultBuilder();
     hostBuilder.UseSystemd();
+    hostBuilder.UseSerilog((ctx, serilogConfig) => ConfigureSerilog(ctx, serilogConfig));
     hostBuilder.ConfigureServices((ctx, services) =>
     {
-        services.AddSingleton(sp => new Places());
-
         services.AddSunTimes(ctx);
         services.AddEventServices();
 
@@ -39,7 +39,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal("Fatar error: {Message}", ex.Message);
+    Log.Fatal("Fatal error: {Message}", ex.Message);
 }
 finally
 {
