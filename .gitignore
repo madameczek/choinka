@@ -88,6 +88,9 @@ ipch/
 *.vspx
 *.sap
 
+# Visual Studio 2022 Local Files
+Visual Studio 2022/
+
 # TFS 2012 Local Workspace
 $tf/
 
