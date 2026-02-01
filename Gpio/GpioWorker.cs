@@ -23,8 +23,6 @@ internal class GpioWorker(
             alarmClockService.Alarm2300Triggered += Choinka_OffEventOccurred;
 
             gpioController.OpenPin(_pinLevelConverter, PinMode.Output, PinValue.High, PinValue.Low);
-            if (gpioController.Read(_pinLevelConverter) == PinValue.Low)
-                gpioController.Write(_pinLevelConverter, PinValue.High);
 
             if (gpioController.IsPinOpen(_pinChoinka) 
                 && gpioController.GetPinMode(_pinChoinka) != PinMode.Output)
@@ -74,16 +72,16 @@ internal class GpioWorker(
 
     private void Choinka_OnEventOccurred(object? sender, EventArgs e)
     {
-        if(!gpioController.IsPinOpen(_pinLevelConverter)
+        if(!gpioController.IsPinOpen(_pinChoinka)
             || (gpioController.IsPinOpen(_pinChoinka) 
             && gpioController.GetPinMode(_pinChoinka) != PinMode.Output))
-            gpioController.OpenPin(_pinLevelConverter, PinMode.Output, PinValue.High, PinValue.Low);
-
-        if (gpioController.Read(_pinLevelConverter) == PinValue.Low)
-            gpioController.Write(_pinLevelConverter, PinValue.High);
+            gpioController.OpenPin(_pinChoinka, PinMode.Output, PinValue.High, PinValue.Low);
 
         if (gpioController.Read(_pinChoinka) == PinValue.Low)
             gpioController.Write(_pinChoinka, PinValue.High);
+
+        if (gpioController.Read(_pinLevelConverter) == PinValue.Low)
+            gpioController.Write(_pinLevelConverter, PinValue.High);
     }
 
     private void Choinka_OffEventOccurred(object? sender, EventArgs e)
