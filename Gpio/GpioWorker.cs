@@ -26,6 +26,10 @@ internal class GpioWorker(
             if (gpioController.Read(_pinLevelConverter) == PinValue.Low)
                 gpioController.Write(_pinLevelConverter, PinValue.High);
 
+            if (gpioController.IsPinOpen(_pinChoinka) 
+                && gpioController.GetPinMode(_pinChoinka) != PinMode.Output)
+                gpioController.OpenPin(_pinChoinka, PinMode.Output, PinValue.Low, PinValue.Low);
+
             await Task.Delay(Timeout.Infinite, stoppingToken);
         }
         catch (OperationCanceledException)
@@ -70,14 +74,13 @@ internal class GpioWorker(
 
     private void Choinka_OnEventOccurred(object? sender, EventArgs e)
     {
-        if(!gpioController.IsPinOpen(_pinLevelConverter))
+        if(!gpioController.IsPinOpen(_pinLevelConverter)
+            || (gpioController.IsPinOpen(_pinChoinka) 
+            && gpioController.GetPinMode(_pinChoinka) != PinMode.Output))
             gpioController.OpenPin(_pinLevelConverter, PinMode.Output, PinValue.High, PinValue.Low);
 
         if (gpioController.Read(_pinLevelConverter) == PinValue.Low)
             gpioController.Write(_pinLevelConverter, PinValue.High);
-
-        if (!gpioController.IsPinOpen(_pinChoinka))
-            gpioController.OpenPin(_pinChoinka, PinMode.Output, PinValue.Low, PinValue.Low);
 
         if (gpioController.Read(_pinChoinka) == PinValue.Low)
             gpioController.Write(_pinChoinka, PinValue.High);
