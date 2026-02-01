@@ -30,7 +30,7 @@ internal class GpioWorker(
         }
         catch (OperationCanceledException)
         {
-            logger.LogInformation("GpioWorker cancellation requested");
+            // ignored, shutting down
         }
         catch (Exception ex)
         {

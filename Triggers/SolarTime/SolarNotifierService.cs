@@ -104,7 +104,6 @@ internal class SolarNotifierService(
             }
             catch (TaskCanceledException)
             {
-                logger.LogWarning("Task cancelled");
                 // ignore
             }
         }
