@@ -1,5 +1,6 @@
 ﻿using choinka.Gpio;
 using choinka.Triggers.SolarTime.Extensions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,9 +12,9 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.Hosting.Lifetime", Serilog.Events.LogEventLevel.Information)
+    .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateBootstrapLogger();
-Log.Information("Starting up");
 
 try
 {
@@ -24,8 +25,15 @@ try
         return;
     }
 
+    Log.Information("Starting up");
+
     var hostBuilder = Host.CreateDefaultBuilder();
     hostBuilder.UseSystemd();
+    hostBuilder.ConfigureAppConfiguration((ctx, config) =>
+    {
+        config.SetBasePath(AppContext.BaseDirectory);
+        config.AddJsonFile($"appsettings.secrets.{ctx.HostingEnvironment.EnvironmentName}.json", false, false);
+    });
     hostBuilder.UseSerilog((ctx, serilogConfig) => ConfigureSerilog(ctx, serilogConfig));
     hostBuilder.ConfigureServices((ctx, services) =>
     {

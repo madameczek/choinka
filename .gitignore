@@ -257,9 +257,7 @@ ModelManifest.xml
 *.pem
 
 # Secrets hosting environment dependent
-/Listener/appsettings.secrets.Development.json
-/Listener/appsettings.secrets.Production.json
-/Listener/appsettings.secrets.Staging.json
+appsettings.secrets.*.json
 
-# other
-/Listener/App/Parsers/ParseJ1939ByFranklin.cs
+# Publish profiles sensitive information
+Properties/PublishProfiles/
